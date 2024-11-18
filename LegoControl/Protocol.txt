@@ -1,0 +1,41 @@
+FORMAT:
+@@@LEGOCTRL#<COMMAND>#<PARAM_1>#<PARAM_2>#...#<PARAM_N>
+TIME - in secs
+SPEED - in %'s
+
+ROBOT listening on UDP 42069
+SERVER listening on UDP 42070
+-----------------------------------------------------
+
+COMMANDS:
+---STOP
+(stop all movement)
+
+---FWD
+(forward movement, sync throttle) 
+PARAM1: TIME (INFTY IF MISSING OR ZERO)
+PARAM2: SPEED (100% IF MISSING)	
+
+---BWD
+(backward movement, sync throttle)
+PARAM1: TIME (INFTY IF MISSING OR ZERO)
+PARAM2: SPEED (-100% IF MISSING)
+
+---LEFT
+(100%/0% to 100%/100% movement, async throttle)
+PARAM1: TIME (INFTY IF MISSING OR ZERO)
+PARAM2: SPEED OF RIGHT ENGINE (0% IF MISSING)
+
+---RIGHT
+(0%/100% to 100%/100% movement, async throttle)
+PARAM1: TIME (INFTY IF MISSING OR ZERO)
+PARAM2: SPEED OF LEFT ENGINE (0% IF MISSING)
+
+MESSAGES:
+---PING
+PARAM1: 0 (REQUEST) OR 1 (REPLY)
+PARAM2: STRING
+
+---SENSOR
+PARAM1: CHANNEL (1, 2, 3, 4)
+PARAM2: VALUE

@@ -2,6 +2,6 @@
 {
     public static class Commands
     {
-        public static string PingRequest = "@@@LEGOCTRL#PING#0#";
+        public static string PingRequest = "@@@LEGOCTRL#PING#0#"; 
     }
 }
