@@ -1,0 +1,121 @@
+﻿@page "/"
+@using System.Net
+@using System.Net.Sockets
+@using System.Text
+@inject IJSRuntime JS
+
+@code
+{
+
+}
+<PageTitle>Home</PageTitle>
+<InputText @bind-Value="IP"/>
+<button @onclick="SaveIP">Save IP</button>
+<div>Current stored IP: </div> 
+<div>@(serv.IPAddress == null ? "NONE" : serv.IPAddress.ToString())</div>
+<button @onclick="Test">Test</button>
+
+<div>Distance: @serv.distance</div>
+<table>
+    <tr>
+        <td>
+
+        </td>
+        <td>
+            <button style="width:100px; height:100px;" @onmousedown="LogA" @onmouseup="Stop">UP</button>
+        </td>
+        <td>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button style="width:100px; height:100px;" @onmouseup="Stop">LEFT</button>
+        </td>
+        <td>
+            <button style="width:100px; height:100px;" @onmouseup="Stop">STOP</button>
+        </td>
+        <td>
+            <button style="width:100px; height:100px;" @onmouseup="Stop">RIGHT</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+        </td>
+        <td>
+            <button style="width:100px; height:100px;" @onmouseup="Stop">DOWN</button>
+        </td>
+        <td>
+        </td>
+    </tr>
+</table>
+
+@code
+{
+    public string IP = "172.27.138.104";
+    public string dst = "NULL";
+    public void SaveIP()
+    {
+        try
+        {
+            serv.IPAddress = IPAddress.Parse(IP);
+        }
+        catch(Exception e)
+        {
+            JS.InvokeVoidAsync("alert", "Wrong IP format!");   
+        }
+    }
+    public void LogA()
+    {
+        serv.Test();
+    }
+
+    public void LogB()
+    {
+        Console.WriteLine("EventB");
+    }
+
+    public void Stop()
+    {
+        //SendCommand("LEGOCTRL#STOP");
+    }
+
+    public void Test()
+    {
+
+    }
+
+
+
+
+
+    //UI update timer 400 ms
+    protected override void OnInitialized()
+    {
+        System.Threading.Timer timer;
+        timer = new System.Threading.Timer(async _ =>
+        {
+            await InvokeAsync(StateHasChanged);
+            /*
+            string outmsg;
+            if (serv.DisplayMessage(out outmsg))
+            {
+                await JS.InvokeVoidAsync("alert", outmsg);
+            }
+            */
+        }, null, 0, 250);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        System.Threading.Timer timer;
+        timer = new System.Threading.Timer(async _ =>
+        {
+            string outmsg;
+            if (serv.DisplayMessage(out outmsg))
+            {
+                await JS.InvokeVoidAsync("alert", outmsg);
+            }
+        }, null, 0, 250);
+    }
+}
