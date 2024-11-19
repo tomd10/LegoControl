@@ -34,3 +34,7 @@ PARAM2: STRING
 (outputs from sensors to server)
 PARAM1: CHANNEL (1, 2, 3, 4)
 PARAM2: VALUE
+
+---MESSAGE
+(message from robot to server)
+PARAM1: MESSAGE
