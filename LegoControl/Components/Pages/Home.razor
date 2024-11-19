@@ -9,13 +9,16 @@
 
 }
 <PageTitle>Home</PageTitle>
-<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="styles2.css" />
+
+<h2>IP config</h2>
 <InputText @bind-Value="IP"/>
 <button @onclick="SaveIP">Save IP</button>
 <div>Current stored IP: </div> 
 <div>@(serv.IPAddress == null ? "NONE" : serv.IPAddress.ToString())</div>
 <button @onclick="Test">Test</button>
 
+<h2>Button control</h2>
 <div>Distance: @serv.distance</div>
 <table>
     <tr>
@@ -51,17 +54,14 @@
     </tr>
 </table>
 
-<img src="joystick.png" id="joystick"  @ondrag="Joystick" @onmouseup="Stop" @ondragend="Stop"/>
+<h2>Joystick control</h2>
+<img src="joystick.png" id="joystick" style="border: 5px solid black;"  @ondrag="Joystick" @onmouseup="Stop" @ondragend="Stop"/>
 
 
 
 
 <script>
-    document.getElementById("joystick").addEventListener("dragstart", function(e) {
-        var img = document.createElement("img");
-        img.src = "drag.png";
-        e.dataTransfer.setDragImage(img, 32, 32);
-    }, false);
+    document.getElementById("joystick").addEventListener("dragstart", function(e) { var img = document.createElement("img"); img.src = "drag.png"; e.dataTransfer.setDragImage(img, 26, 26); }, false);
 </script>
 @code
 {
@@ -81,8 +81,9 @@
 
     public void Joystick(MouseEventArgs e)
     {
-        Console.WriteLine(e.OffsetX);
+        Console.WriteLine("X:"+e.OffsetX + " Y:" + e.OffsetY);
     }
+
         /*
     public void LogA()
     {

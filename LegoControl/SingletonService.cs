@@ -6,7 +6,7 @@ namespace LegoControl
 {
     public class SingletonService
     {  
-        
+        //Connection info
         public const int port = 42069;                      //Robot port
         public const int localPort = 42070;                 //Local port
         public const string localIPString = "172.27.138.104";    //Local IP
@@ -14,9 +14,13 @@ namespace LegoControl
         public UdpClient udpClient = new UdpClient();
         IPEndPoint e = new IPEndPoint(IPAddress.Parse(localIPString), localPort);
         UdpClient u = new UdpClient(new IPEndPoint(IPAddress.Parse(localIPString), localPort));
+
+        //Counters
+        public int receivedPackets = 0;
+        public int sentPackets = 0;
         
         //Webpage variables
-        public IPAddress IPAddress;
+        public IPAddress IPAddress = null;
         public double distance = -1;
 
         Random rnd = new Random();
@@ -26,14 +30,15 @@ namespace LegoControl
             s.e = e;
             s.u = u;
 
-            Console.WriteLine("listening for messages on " + localIPString + ":" + localPort.ToString());
+            Logger.AddAndDisplay("Listening on UDP/" + localIPString + ":" + localPort.ToString(), Severity.Information);
             u.BeginReceive(new AsyncCallback(ReceiveCallback), s);
         }
         public void SendCommand(string command)
         {
             if (IPAddress != null)
             {
-                Console.WriteLine(DateTime.Now.ToString() + " INFO sent src " + localIPString + ":" + localPort + " dst " + IPAddress.ToString() + ":" + port + " data: " + command);
+                sentPackets++;
+                Logger.AddAndDisplay("sent src " + localIPString + ":" + localPort + " dst " + IPAddress.ToString() + ":" + port + " data: '" + command +"'", Severity.Information);
                 byte[] CMD = Encoding.ASCII.GetBytes(command);
                 udpClient.Send(CMD, CMD.Length, IPAddress.ToString(), port);
             }
@@ -49,7 +54,8 @@ namespace LegoControl
 
             //Evaluation of received data
             ///------------------------------------------------------------
-            Console.WriteLine(DateTime.Now.ToString() + " INFO re'd src " + (IPAddress != null ? IPAddress.ToString() : "0.0.0.0") + ":" + port + " dst " + localIPString + ":" + localPort + " data: " + receiveString);
+            Logger.AddAndDisplay("re'd src " + (IPAddress != null ? IPAddress.ToString() : "0.0.0.0") + ":" + port + " dst " + localIPString + ":" + localPort + " data: '" + receiveString +"'", Severity.Information);
+            receivedPackets++;
 
             string[] cmds = receiveString.Split("@@@");
             foreach (string cmd in cmds)
@@ -64,16 +70,26 @@ namespace LegoControl
                     if (awaitingPingReply == true && parameters[2] == "1" && parameters[3] == pingIdentifier.ToString())
                     {
                         awaitingPingReply = false;
-                        message = message + "\r\nSpojení s robotem " + IPAddress.ToString() + " OK!";
+                        Logger.AddAndDisplay("Spojení s robotem" + (IPAddress != null ? IPAddress.ToString() : "0.0.0.0") + " OK!", Severity.Information);
                     }
                 }
-                if (parameters[1] == "SENSOR" && parameters[2] == "1" && double.TryParse(parameters[3], out distance))
+                if (parameters[1] == "SENSOR" && parameters[2] == "1" && double.TryParse(parameters[3].Replace('.', ','), out distance))
                 {
-                    distance = Math.Round(Convert.ToDouble(parameters[3]), 4);
+                    distance = Math.Round(Convert.ToDouble(parameters[3].Replace('.', ',')), 4);
+                }
+                if (parameters[1] == "MESSAGE" && parameters.Length == 4)
+                {
+                    if (parameters[2] == "0")
+                    {
+                        Logger.AddAndDisplay(parameters[3], Severity.Error);
+                    }
+                    else
+                    {
+                        Logger.AddAndDisplay(parameters[3], Severity.Message);
+                    }
                 }
             }
             ///------------------------------------------------------------
-            Console.WriteLine($"Received: {receiveString}");
 
             UdpState s = new UdpState();
             s.e = e;

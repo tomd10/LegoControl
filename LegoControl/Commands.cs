@@ -8,5 +8,6 @@
         public static string Left = "@@@LEGOCTRL#LEFT#0#50";
         public static string Right = "@@@LEGOCTRL#RIGHT#0#50";
         public static string Stop = "@@@LEGOCTRL#STOP";
+        public static string Ride = "@@@LEGOCTRL#RIDE";
     }
 }

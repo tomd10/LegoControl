@@ -1,0 +1,46 @@
+﻿@page "/Debug"
+@using System.Net
+@using System.Net.Sockets
+@using System.Text
+@inject IJSRuntime JS
+<PageTitle>Debug</PageTitle>
+<link rel="stylesheet" href="/styles2.css" />
+<InputText @bind-Value="command" />
+<button @onclick="Send">Send command</button>
+
+<div>Sent packets: @serv.sentPackets</div>
+<div>Received packets: @serv.receivedPackets</div>
+
+<div class="debugBox">@Logger.messages</div>
+
+@code
+{
+    public string command = "@@@LEGOCTRL#";
+
+    public void Send()
+    {
+        if (serv.IPAddress != null)
+        {
+            serv.SendCommand(command);
+            command = "@@@LEGOCTRL#";
+        }
+    }
+
+    //UI update timer 400 ms
+    protected override void OnInitialized()
+    {
+
+        System.Threading.Timer timer;
+        timer = new System.Threading.Timer(async _ =>
+        {
+            await InvokeAsync(StateHasChanged);
+            /*
+            string outmsg;
+            if (serv.DisplayMessage(out outmsg))
+            {
+                await JS.InvokeVoidAsync("alert", outmsg);
+            }
+            */
+        }, null, 0, 250);
+    }
+}
