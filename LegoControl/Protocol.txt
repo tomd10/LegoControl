@@ -37,4 +37,5 @@ PARAM2: VALUE
 
 ---MESSAGE
 (message from robot to server)
-PARAM1: MESSAGE
+PARAM1: TYPE (0 = ERROR, 1 = INFO)
+PARAM2: MESSAGE
