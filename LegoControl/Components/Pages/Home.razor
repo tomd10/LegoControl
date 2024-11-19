@@ -9,6 +9,7 @@
 
 }
 <PageTitle>Home</PageTitle>
+<link rel="stylesheet" href="/styles.css" />
 <InputText @bind-Value="IP"/>
 <button @onclick="SaveIP">Save IP</button>
 <div>Current stored IP: </div> 
@@ -22,7 +23,7 @@
 
         </td>
         <td>
-            <button style="width:100px; height:100px;" @onmousedown="LogA" @onmouseup="Stop">UP</button>
+            <button style="width:100px; height:100px;" @onmousedown="Up" @onmouseup="Stop">UP</button>
         </td>
         <td>
 
@@ -30,26 +31,38 @@
     </tr>
     <tr>
         <td>
-            <button style="width:100px; height:100px;" @onmouseup="Stop">LEFT</button>
+            <button style="width:100px; height:100px;" @onmousedown="Left" @onmouseup="Stop">LEFT</button>
         </td>
         <td>
             <button style="width:100px; height:100px;" @onmouseup="Stop">STOP</button>
         </td>
         <td>
-            <button style="width:100px; height:100px;" @onmouseup="Stop">RIGHT</button>
+            <button style="width:100px; height:100px;" @onmousedown="Right" @onmouseup="Stop">RIGHT</button>
         </td>
     </tr>
     <tr>
         <td>
         </td>
         <td>
-            <button style="width:100px; height:100px;" @onmouseup="Stop">DOWN</button>
+            <button style="width:100px; height:100px;" @onmousedown="Down" @onmouseup="Stop">DOWN</button>
         </td>
         <td>
         </td>
     </tr>
 </table>
 
+<img src="joystick.png" id="joystick"  @ondrag="Joystick" @onmouseup="Stop" @ondragend="Stop"/>
+
+
+
+
+<script>
+    document.getElementById("joystick").addEventListener("dragstart", function(e) {
+        var img = document.createElement("img");
+        img.src = "drag.png";
+        e.dataTransfer.setDragImage(img, 32, 32);
+    }, false);
+</script>
 @code
 {
     public string IP = "172.27.138.104";
@@ -65,33 +78,65 @@
             JS.InvokeVoidAsync("alert", "Wrong IP format!");   
         }
     }
+
+    public void Joystick(MouseEventArgs e)
+    {
+        Console.WriteLine(e.OffsetX);
+    }
+        /*
     public void LogA()
     {
-        serv.Test();
-    }
+    serv.Test();
+        }
 
     public void LogB()
-    {
-        Console.WriteLine("EventB");
+        {
+    Console.WriteLine("EventB");
     }
 
     public void Stop()
     {
-        //SendCommand("LEGOCTRL#STOP");
+    //SendCommand("LEGOCTRL#STOP");
     }
+
+
+
+    */
 
     public void Test()
     {
-
+        serv.Test();
     }
 
+    public void Up()
+    {
+        serv.Up();
+    }
 
+    public void Left()
+    {
+        serv.Left();
+    }
 
+    public void Right()
+    {
+        serv.Right();
+    }
 
+    public void Down()
+    {
+        serv.Down();
+    }
+
+    public void Stop()
+    {
+        serv.Stop();
+    }
 
     //UI update timer 400 ms
     protected override void OnInitialized()
     {
+
         System.Threading.Timer timer;
         timer = new System.Threading.Timer(async _ =>
         {

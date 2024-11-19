@@ -33,6 +33,7 @@ namespace LegoControl
         {
             if (IPAddress != null)
             {
+                Console.WriteLine(DateTime.Now.ToString() + " INFO sent src " + localIPString + ":" + localPort + " dst " + IPAddress.ToString() + ":" + port + " data: " + command);
                 byte[] CMD = Encoding.ASCII.GetBytes(command);
                 udpClient.Send(CMD, CMD.Length, IPAddress.ToString(), port);
             }
@@ -48,7 +49,7 @@ namespace LegoControl
 
             //Evaluation of received data
             ///------------------------------------------------------------
-            Console.WriteLine(receiveString);
+            Console.WriteLine(DateTime.Now.ToString() + " INFO re'd src " + (IPAddress != null ? IPAddress.ToString() : "0.0.0.0") + ":" + port + " dst " + localIPString + ":" + localPort + " data: " + receiveString);
 
             string[] cmds = receiveString.Split("@@@");
             foreach (string cmd in cmds)
@@ -107,6 +108,31 @@ namespace LegoControl
 
             SendCommand(Commands.PingRequest + pingIdentifier.ToString());
             
+        }
+
+        public void Up()
+        {
+            SendCommand(Commands.Up);
+        }
+
+        public void Down()
+        {
+            SendCommand(Commands.Down);
+        }
+
+        public void Left()
+        {
+            SendCommand(Commands.Left);
+        }
+
+        public void Right()
+        {
+            SendCommand(Commands.Right);
+        }
+
+        public void Stop()
+        {
+            SendCommand(Commands.Stop);
         }
     }
 }
