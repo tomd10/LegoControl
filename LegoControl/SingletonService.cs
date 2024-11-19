@@ -9,7 +9,7 @@ namespace LegoControl
         //Connection info
         public const int port = 42069;                      //Robot port
         public const int localPort = 42070;                 //Local port
-        public const string localIPString = "172.27.138.104";    //Local IP
+        public const string localIPString = "100.64.0.101";    //Local IP
         
         public UdpClient udpClient = new UdpClient();
         IPEndPoint e = new IPEndPoint(IPAddress.Parse(localIPString), localPort);
@@ -70,7 +70,7 @@ namespace LegoControl
                     if (awaitingPingReply == true && parameters[2] == "1" && parameters[3] == pingIdentifier.ToString())
                     {
                         awaitingPingReply = false;
-                        Logger.AddAndDisplay("Spojení s robotem" + (IPAddress != null ? IPAddress.ToString() : "0.0.0.0") + " OK!", Severity.Information);
+                        Logger.AddAndDisplay("Connection with" + (IPAddress != null ? IPAddress.ToString() : "0.0.0.0") + " OK!", Severity.Information);
                     }
                 }
                 if (parameters[1] == "SENSOR" && parameters[2] == "1" && double.TryParse(parameters[3].Replace('.', ','), out distance))
@@ -128,22 +128,22 @@ namespace LegoControl
 
         public void Up()
         {
-            SendCommand(Commands.Up);
+            SendCommand(Commands.RideCommand(0, 100, 100));
         }
 
         public void Down()
         {
-            SendCommand(Commands.Down);
+            SendCommand(Commands.RideCommand(0, -100, -100));
         }
 
         public void Left()
         {
-            SendCommand(Commands.Left);
+            SendCommand(Commands.RideCommand(0, 50, 100));
         }
 
         public void Right()
         {
-            SendCommand(Commands.Right);
+            SendCommand(Commands.RideCommand(0, 100, 50));
         }
 
         public void Stop()
