@@ -1,0 +1,47 @@
+﻿@page "/Jukebox"
+@using System.Net
+@using System.Net.Sockets
+@using System.Text
+@inject IJSRuntime JS
+<PageTitle>Jukebox</PageTitle>
+<link rel="stylesheet" href="/styles2.css" />
+
+<div>Song number</div>
+<InputNumber @bind-Value="songNumber" Min="1" Max="5"/>
+<InputNumber @bind-Value="volume" Min="10" Max="100" Step="10"/>
+<button @onclick="Play">Play song</button>
+<button @onclick="Mute">Mute</button>
+
+
+@code
+{
+    public int songNumber = 1;
+    public int volume = 50;
+    public void Play()
+    {
+        serv.SendCommand(Commands.SongCommand(songNumber, volume));
+    }
+
+    public void Mute()
+    {
+        serv.SendCommand(Commands.Mute);
+    }
+
+    //UI update timer 400 ms
+    protected override void OnInitialized()
+    {
+
+        System.Threading.Timer timer;
+        timer = new System.Threading.Timer(async _ =>
+        {
+            await InvokeAsync(StateHasChanged);
+            /*
+            string outmsg;
+            if (serv.DisplayMessage(out outmsg))
+            {
+                await JS.InvokeVoidAsync("alert", outmsg);
+            }
+            */
+        }, null, 0, 250);
+    }
+}

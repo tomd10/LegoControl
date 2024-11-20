@@ -54,14 +54,10 @@
     </tr>
 </table>
 
-<h2>Joystick control</h2>
-<img src="joystick.png" id="joystick" style="border: 5px solid black;"  @ondrag="Joystick" @onmouseup="Stop" @ondragend="Stop"/>
-
-
 
 
 <script>
-    document.getElementById("joystick").addEventListener("dragstart", function(e) { var img = document.createElement("img"); img.src = "drag.png"; e.dataTransfer.setDragImage(img, 26, 26); }, false);
+    //document.getElementById("joystick").addEventListener("dragstart", function(e) { var img = document.createElement("img"); img.src = "drag.png"; e.dataTransfer.setDragImage(img, 26, 26); }, false);
 </script>
 @code
 {
@@ -79,9 +75,37 @@
         }
     }
 
+    public void Pokus(MouseEventArgs e)
+    {
+        //Console.WriteLine("X:" + e.OffsetX + " Y:" + e.OffsetY);
+        Console.WriteLine(e.Buttons);
+        if (true)
+        {
+            Console.WriteLine("X:" + e.OffsetX + " Y:" + e.OffsetY);
+        }
+    }
+
     public void Joystick(MouseEventArgs e)
     {
-        Console.WriteLine("X:"+e.OffsetX + " Y:" + e.OffsetY);
+        if (e.Buttons == 1)
+        {
+            Console.WriteLine("X:" + e.OffsetX + " Y:" + e.OffsetY);
+        }
+    }
+
+    public void JoystickP(PointerEventArgs e)
+    {
+        Console.WriteLine(e.Buttons);
+        if (true)
+        {
+            Console.WriteLine("X:" + e.OffsetX + " Y:" + e.OffsetY);
+        }
+    }
+
+    public void StopJoystick(MouseEventArgs e)
+    {
+        if (e.Buttons == 1) serv.Stop();
+        
     }
 
         /*

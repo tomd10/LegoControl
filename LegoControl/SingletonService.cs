@@ -9,7 +9,7 @@ namespace LegoControl
         //Connection info
         public const int port = 42069;                      //Robot port
         public const int localPort = 42070;                 //Local port
-        public const string localIPString = "100.64.0.101";    //Local IP
+        public const string localIPString = "172.27.138.104";    //Local IP
         
         public UdpClient udpClient = new UdpClient();
         IPEndPoint e = new IPEndPoint(IPAddress.Parse(localIPString), localPort);
@@ -122,7 +122,7 @@ namespace LegoControl
             pingIdentifier = rnd.Next(0, 100);
             awaitingPingReply = true;
 
-            SendCommand(Commands.PingRequest + pingIdentifier.ToString());
+            SendCommand(Commands.PingRequestCommand(pingIdentifier.ToString()));
             
         }
 
@@ -149,6 +149,19 @@ namespace LegoControl
         public void Stop()
         {
             SendCommand(Commands.Stop);
+        }
+
+        public void Joystick (int x, int y, int dim)
+        {
+            int cartX = x - dim/2;
+            int cartY = dim/2 - y;
+            //Console.WriteLine(cartX + " " + cartY);
+
+            double speed = 100 * (2 * (double)cartY / (double)dim);
+            if (speed > 100) speed = 100;
+            if (speed < -100) speed = -100;
+
+            SendCommand(Commands.RideCommand(0, (int)speed, (int)speed));
         }
     }
 }

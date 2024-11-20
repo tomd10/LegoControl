@@ -1,0 +1,72 @@
+﻿@page "/Joystick"
+@using System.Net
+@using System.Net.Sockets
+@using System.Text
+@inject IJSRuntime JS
+<PageTitle>Joystick</PageTitle>
+<style>body {touch-action:none;}</style>
+
+<link rel="stylesheet" href="/styles2.css" />
+
+<div style="overflow: hidden;">
+
+
+<h2>Joystick control</h2>
+    <img src="joystick.png" id="joystick" class="noselect" style="border: 5px solid black; width: 100%; height: 100%; max-height: 700px; max-width: 700px; margin: auto;" @onpointerleave="StopJoystick" @onpointermove="JoystickP" @onpointerup="Stop" />
+
+</div>
+<script>
+    function fh() { return document.getElementById('joystick').height }
+</script>
+@code
+{
+    public void JoystickM(MouseEventArgs e)
+    {
+        if (e.Buttons == 1)
+        {
+            Console.WriteLine("X:" + e.OffsetX + " Y:" + e.OffsetY);
+        }
+    }
+
+    public async Task JoystickP(PointerEventArgs e)
+    {
+        //Console.WriteLine(e.Buttons);
+
+        if (e.Buttons == 1)
+        {
+            //Console.WriteLine("X:" + e.OffsetX + " Y:" + e.OffsetY);
+            string text = "";
+            var y = await JS.InvokeAsync<int>("fh");
+            //Console.WriteLine("Dim:" + y + " " + e.OffsetX + " " + e.OffsetY);
+
+            serv.Joystick((int)e.OffsetX, (int)e.OffsetY, y);
+        }
+    }
+
+    public void StopJoystick(MouseEventArgs e)
+    {
+        if (e.Buttons == 0) serv.Stop();
+
+    }
+
+    public void Stop()
+    {
+        serv.Stop();
+    }
+    //UI update timer 400 ms
+    protected override void OnInitialized()
+    {
+        System.Threading.Timer timer;
+        timer = new System.Threading.Timer(async _ =>
+        {
+            await InvokeAsync(StateHasChanged);
+            /*
+            string outmsg;
+            if (serv.DisplayMessage(out outmsg))
+            {
+                await JS.InvokeVoidAsync("alert", outmsg);
+            }
+            */
+        }, null, 0, 250);
+    }
+}
