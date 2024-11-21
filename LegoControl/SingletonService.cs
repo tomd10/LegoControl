@@ -151,17 +151,42 @@ namespace LegoControl
             SendCommand(Commands.Stop);
         }
 
+        public void Play(int songNumber)
+        {
+            SendCommand(Commands.SongCommand(songNumber));
+        }
+
+        public void Mute()
+        {
+            SendCommand(Commands.Mute);
+        }
+
         public void Joystick (int x, int y, int dim)
         {
             int cartX = x - dim/2;
             int cartY = dim/2 - y;
             //Console.WriteLine(cartX + " " + cartY);
 
-            double speed = 100 * (2 * (double)cartY / (double)dim);
-            if (speed > 100) speed = 100;
-            if (speed < -100) speed = -100;
+            int normY = (int)(100 * (2 * (double)cartY / (double)dim));
+            int normX = (int)(100 * (2 * (double)cartX / (double)dim));
 
-            SendCommand(Commands.RideCommand(0, (int)speed, (int)speed));
+            //Console.WriteLine("[" + normX + " ; " + normY + "]");
+
+            if (normX > 100) normX = 100;
+            if (normX < -100) normX = -100;
+            if (normY > 100) normY = 100;
+            if (normY < -100) normY = -100;
+
+            SendCommand(Commands.JoystickCommand(normX, normY));
+            //if (speed > 100) speed = 100;
+            //if (speed < -100) speed = -100;
+
+            //SendCommand(Commands.RideCommand(0, (int)speed, (int)speed));
+        }
+
+        public void SetVolume(int volume)
+        {
+            SendCommand(Commands.VolumeCommand(volume));
         }
     }
 }

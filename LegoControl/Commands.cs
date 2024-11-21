@@ -11,10 +11,11 @@
         public static string Ride = "@@@LEGOCTRL#RIDE";
         public static string Mute = "@@@LEGOCTRL#MUTE";
         public static string Song = "@@@LEGOCTRL#SONG";
-
-        public static string SongCommand(int songNumber, int volume)
+        public static string Volume = "@@@LEGOCTRL#VOLUME";
+        public static string Joystick = "@@@LEGOCTR#JOYSTICK";
+        public static string SongCommand(int songNumber)
         {
-            return Song + "#" + songNumber + ".waw#"+volume;
+            return Song + "#" + songNumber + ".wav";
         }
         public static string RideCommand(int time, int speedL, int speedR)
         {
@@ -24,6 +25,16 @@
         public static string PingRequestCommand(string data)
         {
             return PingRequest + "#" + data;
+        }
+
+        public static string VolumeCommand(int volume)
+        {
+            return Volume + "#" + volume;
+        }
+
+        public static string JoystickCommand(int x, int y)
+        {
+            return Joystick + "#" + x + "#" + y;
         }
     }
 }

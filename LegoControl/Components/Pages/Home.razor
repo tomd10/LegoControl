@@ -26,7 +26,7 @@
 
         </td>
         <td>
-            <button style="width:100px; height:100px;" @onmousedown="Up" @onmouseup="Stop">UP</button>
+            <button style="width:100px; height:100px;" @onmousedown="Up" @ontouchstart="Up" @onmouseup="Stop" @ontouchend="Stop">UP</button>
         </td>
         <td>
 
@@ -34,20 +34,20 @@
     </tr>
     <tr>
         <td>
-            <button style="width:100px; height:100px;" @onmousedown="Left" @onmouseup="Stop">LEFT</button>
+            <button style="width:100px; height:100px;" @onmousedown="Left" @ontouchstart="Left" @onmouseup="Stop" @ontouchend="Stop">LEFT</button>
         </td>
         <td>
             <button style="width:100px; height:100px;" @onmouseup="Stop">STOP</button>
         </td>
         <td>
-            <button style="width:100px; height:100px;" @onmousedown="Right" @onmouseup="Stop">RIGHT</button>
+            <button style="width:100px; height:100px;" @onmousedown="Right" @ontouchstart="Right" @onmouseup="Stop" @ontouchend="Stop">RIGHT</button>
         </td>
     </tr>
     <tr>
         <td>
         </td>
         <td>
-            <button style="width:100px; height:100px;" @onmousedown="Down" @onmouseup="Stop">DOWN</button>
+            <button style="width:100px; height:100px;" @onmousedown="Down" @ontouchstart="Down" @onmouseup="Stop" @ontouchend="Stop">DOWN</button>
         </td>
         <td>
         </td>
@@ -72,33 +72,6 @@
         catch(Exception e)
         {
             JS.InvokeVoidAsync("alert", "Wrong IP format!");   
-        }
-    }
-
-    public void Pokus(MouseEventArgs e)
-    {
-        //Console.WriteLine("X:" + e.OffsetX + " Y:" + e.OffsetY);
-        Console.WriteLine(e.Buttons);
-        if (true)
-        {
-            Console.WriteLine("X:" + e.OffsetX + " Y:" + e.OffsetY);
-        }
-    }
-
-    public void Joystick(MouseEventArgs e)
-    {
-        if (e.Buttons == 1)
-        {
-            Console.WriteLine("X:" + e.OffsetX + " Y:" + e.OffsetY);
-        }
-    }
-
-    public void JoystickP(PointerEventArgs e)
-    {
-        Console.WriteLine(e.Buttons);
-        if (true)
-        {
-            Console.WriteLine("X:" + e.OffsetX + " Y:" + e.OffsetY);
         }
     }
 

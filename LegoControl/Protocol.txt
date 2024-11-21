@@ -16,13 +16,21 @@ PARAM1: TIME (INFTY IF ZERO)
 PARAM2: LEFT ENG SPEED (-100 TO 100)
 PARAM3: RIGHT ENG SPEED (-100 TO 100)
 
+---JOYSTICK
+(joystick coords normalized to -100; +100)
+PARAM1: X COORD
+PARAM2: Y COORD
+
 ---SONG
 (plays song from PARAM1)
 PARAM1: FILENAME
-PARAM2: VOLUME
 
 ---MUTE
 (mutes all sounds)
+
+---VOLUME
+(sets volume)
+PARAM1: VOLUME (0 TO 100)
 
 MESSAGES:
 ---PING

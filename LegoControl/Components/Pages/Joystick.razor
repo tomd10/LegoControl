@@ -30,29 +30,23 @@
 
     public async Task JoystickP(PointerEventArgs e)
     {
-        //Console.WriteLine(e.Buttons);
-
         if (e.Buttons == 1)
         {
-            //Console.WriteLine("X:" + e.OffsetX + " Y:" + e.OffsetY);
-            string text = "";
-            var y = await JS.InvokeAsync<int>("fh");
-            //Console.WriteLine("Dim:" + y + " " + e.OffsetX + " " + e.OffsetY);
-
-            serv.Joystick((int)e.OffsetX, (int)e.OffsetY, y);
+            int dim = await JS.InvokeAsync<int>("fh");
+            serv.Joystick((int)e.OffsetX, (int)e.OffsetY, dim);
         }
     }
 
     public void StopJoystick(MouseEventArgs e)
     {
         if (e.Buttons == 0) serv.Stop();
-
     }
 
     public void Stop()
     {
         serv.Stop();
     }
+
     //UI update timer 400 ms
     protected override void OnInitialized()
     {
