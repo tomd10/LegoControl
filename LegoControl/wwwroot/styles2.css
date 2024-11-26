@@ -11,6 +11,16 @@ img {
     
 }
 
+.infoFooter
+{
+    position: sticky;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: orange;
+    text-align: center;
+}
+
 .debugBox {
     white-space: pre-wrap;
     font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;

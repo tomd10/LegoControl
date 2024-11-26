@@ -6,29 +6,45 @@
 <PageTitle>Jukebox</PageTitle>
 <link rel="stylesheet" href="/styles2.css" />
 
-<div>Song number</div>
-<InputNumber @bind-Value="songNumber" Min="1" Max="5"/>
 
 
+
+
+
+
+<select @bind="songName">
+    @if(serv.songs != null && serv.songs.Count > 0)
+    {
+        @foreach(string song in serv.songs)
+        {
+            <option value="@song">
+                @(song.Substring(0, song.Length - 4).Split('_')[1] + " (" + song.Substring(0, song.Length - 4).Split('_')[0] + ")")
+            </option>
+        }
+    }
+</select>
 <button @onclick="Play">Play song</button>
+<br />
 <button @onclick="Mute">Mute</button>
-
 <br />
 <input type="range" min="1" max="100" value="30" style="width: 80%; max-width: 500px; margin-top: 2em" id="slider">
 
 @code
 {
-    public int songNumber = 1;
     public static SingletonService s;
-
+    public string songName = "";
 
     public void Play()
     {
-        serv.Play(songNumber);
+        if (songName != "" && songName != null)
+        {
+            serv.Play(songName);
+        }
     }
 
     public void Mute()
     {
+        Console.WriteLine(songName);
         serv.Mute();
 
     }

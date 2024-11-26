@@ -14,19 +14,22 @@
 <h2>IP config</h2>
 <InputText @bind-Value="IP"/>
 <button @onclick="SaveIP">Save IP</button>
-<div>Current stored IP: </div> 
-<div>@(serv.IPAddress == null ? "NONE" : serv.IPAddress.ToString())</div>
+<div>Robot IP: @(serv.IPAddress == null ? "NONE" : serv.IPAddress.ToString())</div>
+<div>Connection status: @(serv.connected ? "Connected!" : "No connection!")</div>
+
 <button @onclick="Test">Test</button>
 
 <h2>Button control</h2>
 <div>Distance: @serv.distance</div>
-<table>
+<table class="noselect">
     <tr>
         <td>
 
         </td>
         <td>
-            <button style="width:100px; height:100px;" @onmousedown="Up" @ontouchstart="Up" @onmouseup="Stop" @ontouchend="Stop">UP</button>
+            <button style="width:100px; height:100px;" 
+            @onmousedown="Up" @ontouchstart:preventDefault="true" @ontouchstart="Up" 
+            @onmouseup="Stop" @ontouchend:preventDefault="true" @ontouchend="Stop">UP</button>
         </td>
         <td>
 
@@ -34,25 +37,33 @@
     </tr>
     <tr>
         <td>
-            <button style="width:100px; height:100px;" @onmousedown="Left" @ontouchstart="Left" @onmouseup="Stop" @ontouchend="Stop">LEFT</button>
+            <button style="width:100px; height:100px;"
+            @onmousedown="Left" @ontouchstart="Left" @ontouchstart:preventDefault="true"
+                    @onmouseup="Stop" @ontouchend="Stop" @ontouchend:preventDefault="true">LEFT</button>
         </td>
         <td>
             <button style="width:100px; height:100px;" @onmouseup="Stop">STOP</button>
         </td>
         <td>
-            <button style="width:100px; height:100px;" @onmousedown="Right" @ontouchstart="Right" @onmouseup="Stop" @ontouchend="Stop">RIGHT</button>
+            <button style="width:100px; height:100px;" 
+            @onmousedown="Right" @ontouchstart="Right" @ontouchstart:preventDefault="true"
+            @onmouseup="Stop" @ontouchend="Stop" @ontouchend:preventDefault="true">RIGHT</button>
         </td>
     </tr>
     <tr>
         <td>
         </td>
         <td>
-            <button style="width:100px; height:100px;" @onmousedown="Down" @ontouchstart="Down" @onmouseup="Stop" @ontouchend="Stop">DOWN</button>
+            <button style="width:100px; height:100px;" 
+            @onmousedown="Down" @ontouchstart="Down" @ontouchstart:preventDefault="true"  
+            @onmouseup="Stop" @ontouchend="Stop">DOWN</button>
         </td>
         <td>
         </td>
     </tr>
 </table>
+
+
 
 
 
@@ -68,6 +79,7 @@
         try
         {
             serv.IPAddress = IPAddress.Parse(IP);
+            serv.Test();
         }
         catch(Exception e)
         {
@@ -134,31 +146,10 @@
     //UI update timer 400 ms
     protected override void OnInitialized()
     {
-
         System.Threading.Timer timer;
         timer = new System.Threading.Timer(async _ =>
         {
             await InvokeAsync(StateHasChanged);
-            /*
-            string outmsg;
-            if (serv.DisplayMessage(out outmsg))
-            {
-                await JS.InvokeVoidAsync("alert", outmsg);
-            }
-            */
-        }, null, 0, 250);
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        System.Threading.Timer timer;
-        timer = new System.Threading.Timer(async _ =>
-        {
-            string outmsg;
-            if (serv.DisplayMessage(out outmsg))
-            {
-                await JS.InvokeVoidAsync("alert", outmsg);
-            }
         }, null, 0, 250);
     }
 }

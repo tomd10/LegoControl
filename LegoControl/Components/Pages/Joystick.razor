@@ -9,25 +9,14 @@
 <link rel="stylesheet" href="/styles2.css" />
 
 <div style="overflow: hidden;">
-
-
-<h2>Joystick control</h2>
-    <img src="joystick.png" id="joystick" class="noselect" style="border: 5px solid black; width: 100%; height: 100%; max-height: 700px; max-width: 700px; margin: auto;" @onpointerleave="StopJoystick" @onpointermove="JoystickP" @onpointerup="Stop" />
-
+<img src="joystick.png" id="joystick" class="noselect" style="border: 5px solid black; width: 100%; height: 100%; max-height: 700px; max-width: 700px; margin: auto;" @onpointerleave="StopJoystick" @onpointermove="JoystickP" @onpointerup="Stop" />
 </div>
+
 <script>
     function fh() { return document.getElementById('joystick').height }
 </script>
 @code
 {
-    public void JoystickM(MouseEventArgs e)
-    {
-        if (e.Buttons == 1)
-        {
-            Console.WriteLine("X:" + e.OffsetX + " Y:" + e.OffsetY);
-        }
-    }
-
     public async Task JoystickP(PointerEventArgs e)
     {
         if (e.Buttons == 1)
@@ -54,13 +43,6 @@
         timer = new System.Threading.Timer(async _ =>
         {
             await InvokeAsync(StateHasChanged);
-            /*
-            string outmsg;
-            if (serv.DisplayMessage(out outmsg))
-            {
-                await JS.InvokeVoidAsync("alert", outmsg);
-            }
-            */
         }, null, 0, 250);
     }
 }

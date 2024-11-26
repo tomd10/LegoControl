@@ -12,10 +12,10 @@
         public static string Mute = "@@@LEGOCTRL#MUTE";
         public static string Song = "@@@LEGOCTRL#SONG";
         public static string Volume = "@@@LEGOCTRL#VOLUME";
-        public static string Joystick = "@@@LEGOCTR#JOYSTICK";
-        public static string SongCommand(int songNumber)
+        public static string Joystick = "@@@LEGOCTRl#JOYSTICK";
+        public static string SongCommand(string songName)
         {
-            return Song + "#" + songNumber + ".wav";
+            return Song + "#" + songName;
         }
         public static string RideCommand(int time, int speedL, int speedR)
         {

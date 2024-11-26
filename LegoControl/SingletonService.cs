@@ -21,7 +21,9 @@ namespace LegoControl
         
         //Webpage variables
         public IPAddress IPAddress = null;
+        public bool connected = false;
         public double distance = -1;
+        public List<string> songs;
 
         Random rnd = new Random();
         public SingletonService()
@@ -35,12 +37,16 @@ namespace LegoControl
         }
         public void SendCommand(string command)
         {
-            if (IPAddress != null)
+            if (IPAddress != null && (connected || command.StartsWith(Commands.PingRequest)))
             {
                 sentPackets++;
                 Logger.AddAndDisplay("sent src " + localIPString + ":" + localPort + " dst " + IPAddress.ToString() + ":" + port + " data: '" + command +"'", Severity.Information);
                 byte[] CMD = Encoding.ASCII.GetBytes(command);
                 udpClient.Send(CMD, CMD.Length, IPAddress.ToString(), port);
+            }
+            else
+            {
+                Logger.AddAndDisplay("tried sending, but no conn! " + command, Severity.Information);
             }
         }
 
@@ -65,15 +71,26 @@ namespace LegoControl
 
                 string[] parameters = cmd.Split('#');
 
-                if (parameters[1] == "PING" && parameters.Length == 4)
+                if (parameters[1] == "PING" && parameters.Length >= 4)
                 {
                     if (awaitingPingReply == true && parameters[2] == "1" && parameters[3] == pingIdentifier.ToString())
                     {
                         awaitingPingReply = false;
                         Logger.AddAndDisplay("Connection with" + (IPAddress != null ? IPAddress.ToString() : "0.0.0.0") + " OK!", Severity.Information);
+                        connected = true;
+                        songs = new List<string>();
+                        for (int i = 4;  i < parameters.Length; i = i +2)
+                        {
+                            if (parameters[i] == "SONG")
+                            {
+                                songs.Add(parameters[i + 1]);
+                            }
+                        }
+
+                        Logger.LogSongs(songs);
                     }
                 }
-                if (parameters[1] == "SENSOR" && parameters[2] == "1" && double.TryParse(parameters[3].Replace('.', ','), out distance))
+                if (parameters[1] == "SENSOR" && parameters[2] == "4" && double.TryParse(parameters[3].Replace('.', ','), out distance))
                 {
                     distance = Math.Round(Convert.ToDouble(parameters[3].Replace('.', ',')), 4);
                 }
@@ -97,7 +114,7 @@ namespace LegoControl
 
             u.BeginReceive(new AsyncCallback(ReceiveCallback), s);
         }
-
+        /*
         private string message = "";
         public bool DisplayMessage (out string msg)
         {
@@ -113,12 +130,13 @@ namespace LegoControl
                 return true;
             }
         }
+        */
 
         private bool awaitingPingReply = false;
         private int pingIdentifier = 0;
         public void Test()
         {
-            if (awaitingPingReply) return;
+            connected = false;
             pingIdentifier = rnd.Next(0, 100);
             awaitingPingReply = true;
 
@@ -138,12 +156,12 @@ namespace LegoControl
 
         public void Left()
         {
-            SendCommand(Commands.RideCommand(0, 50, 100));
+            SendCommand(Commands.RideCommand(0, -100, 100));
         }
 
         public void Right()
         {
-            SendCommand(Commands.RideCommand(0, 100, 50));
+            SendCommand(Commands.RideCommand(0, 100, -100));
         }
 
         public void Stop()
@@ -151,9 +169,9 @@ namespace LegoControl
             SendCommand(Commands.Stop);
         }
 
-        public void Play(int songNumber)
+        public void Play(string songName)
         {
-            SendCommand(Commands.SongCommand(songNumber));
+            SendCommand(Commands.SongCommand(songName));
         }
 
         public void Mute()

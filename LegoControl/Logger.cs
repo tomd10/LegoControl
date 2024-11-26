@@ -15,6 +15,18 @@
             Console.WriteLine(mess);
             messages = messages + mess + "\r\n";
         }
+
+        public static void LogSongs(List<string> songs)
+        {
+            string msg = "Loaded " + songs.Count + " songs: ";
+            foreach (string s in songs) 
+            {
+                msg = msg + s + ", ";
+            }
+            msg = msg.Substring(0, msg.Length - 2);
+
+            AddAndDisplay(msg, Severity.Information);
+        }
     }
 
     public enum Severity

@@ -32,11 +32,16 @@ PARAM1: FILENAME
 (sets volume)
 PARAM1: VOLUME (0 TO 100)
 
-MESSAGES:
----PING
-(REQUEST sent by server, REPLY sent by robot)
-PARAM1: 0 (REQUEST) OR 1 (REPLY)
+---PING (request)
+PARAM1: 0
 PARAM2: STRING
+
+MESSAGES:
+---PING (reply)
+PARAM1: 1
+PARAM2: STRING from REQUEST
+PARAM3: SONG
+PARAM4: STRING: INTERPRET_SONGNAME.wav (& for whitespace)
 
 ---SENSOR
 (outputs from sensors to server)
