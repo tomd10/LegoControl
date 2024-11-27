@@ -18,21 +18,28 @@
         @foreach(string song in serv.songs)
         {
             <option value="@song">
-                @(song.Substring(0, song.Length - 4).Split('_')[1] + " (" + song.Substring(0, song.Length - 4).Split('_')[0] + ")")
+                @(song.Substring(0, song.Length - 4).Split('_')[1].Replace('&', ' ') + " (" + song.Substring(0, song.Length - 4).Split('_')[0].Replace('&', ' ') + ")")
             </option>
         }
     }
 </select>
 <button @onclick="Play">Play song</button>
-<br />
-<button @onclick="Mute">Mute</button>
+
 <br />
 <input type="range" min="1" max="100" value="30" style="width: 80%; max-width: 500px; margin-top: 2em" id="slider">
 
+<br />
+<br />
+<InputNumber min="20" max="20000" @bind-Value="frequency"></InputNumber> <button @onclick="PlayTone">Play tone</button>
+
+<br />
+<br />
+<button @onclick="Mute">Mute</button>
 @code
 {
     public static SingletonService s;
     public string songName = "";
+    public int frequency = 440;
 
     public void Play()
     {
@@ -40,6 +47,11 @@
         {
             serv.Play(songName);
         }
+    }
+
+    public void PlayTone()
+    {
+        serv.PlayTone(frequency);
     }
 
     public void Mute()

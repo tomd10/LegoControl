@@ -32,6 +32,10 @@ PARAM1: FILENAME
 (sets volume)
 PARAM1: VOLUME (0 TO 100)
 
+---TONE
+(plays tone)
+PARAM1: FREQUENCY (in Hz, 20 to 20000)
+
 ---PING (request)
 PARAM1: 0
 PARAM2: STRING

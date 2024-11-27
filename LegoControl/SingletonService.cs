@@ -206,5 +206,13 @@ namespace LegoControl
         {
             SendCommand(Commands.VolumeCommand(volume));
         }
+
+        public void PlayTone(int frequency)
+        {
+            if (frequency >= 20 && frequency <= 20000)
+            {
+                SendCommand(Commands.ToneCommand(frequency));
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@
         public static string Mute = "@@@LEGOCTRL#MUTE";
         public static string Song = "@@@LEGOCTRL#SONG";
         public static string Volume = "@@@LEGOCTRL#VOLUME";
+        public static string Tone = "@@@LEGOCTRL#TONE";
         public static string Joystick = "@@@LEGOCTRl#JOYSTICK";
         public static string SongCommand(string songName)
         {
@@ -35,6 +36,11 @@
         public static string JoystickCommand(int x, int y)
         {
             return Joystick + "#" + x + "#" + y;
+        }
+
+        public static string ToneCommand(int hz)
+        {
+            return Tone + "#" + hz;
         }
     }
 }
