@@ -7,7 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .Services.AddSingleton<SingletonService>();
-builder.WebHost.UseStaticWebAssets();
     
 
 

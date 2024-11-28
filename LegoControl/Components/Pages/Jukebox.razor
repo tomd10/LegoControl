@@ -13,9 +13,9 @@
 
 
 <select @bind="songName">
-    @if(serv.songs != null && serv.songs.Count > 0)
+    @if (serv.songs != null && serv.songs.Count > 0)
     {
-        @foreach(string song in serv.songs)
+        @foreach (string song in serv.songs)
         {
             <option value="@song">
                 @(song.Substring(0, song.Length - 4).Split('_')[1].Replace('&', ' ') + " (" + song.Substring(0, song.Length - 4).Split('_')[0].Replace('&', ' ') + ")")
@@ -30,7 +30,8 @@
 
 <br />
 <br />
-<InputNumber min="20" max="20000" @bind-Value="frequency"></InputNumber> <button @onclick="PlayTone">Play tone</button>
+<InputNumber min="20" max="20000" @bind-Value="frequency"></InputNumber>
+<button @onclick="PlayTone">Play tone</button>
 
 <br />
 <br />
@@ -79,7 +80,7 @@
         if (firstRender)
         {
             module = await JS.InvokeAsync<IJSObjectReference>("import",
-                "./Components/Pages/Jukebox.razor.js");
+                "/slider.js");
 
             await module.InvokeVoidAsync("addHandlers");
         }

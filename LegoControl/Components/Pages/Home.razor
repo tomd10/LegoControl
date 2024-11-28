@@ -12,51 +12,59 @@
 <link rel="stylesheet" href="styles2.css" />
 
 <h2>IP config</h2>
-<InputText @bind-Value="IP"/>
-<button @onclick="SaveIP">Save IP</button>
+<InputText @bind-Value="IPRobot" />
+<br />
+<InputText @bind-Value="IPLocal" />
+<button @onclick="SaveIP">Save robot IP</button>
+
+
 <div>Robot IP: @(serv.IPAddress == null ? "NONE" : serv.IPAddress.ToString())</div>
 <div>Connection status: @(serv.connected ? "Connected!" : "No connection!")</div>
-
-<button @onclick="Test">Test</button>
 
 <h2>Button control</h2>
 <div>Distance: @serv.distance</div>
 <table class="noselect">
     <tr>
         <td>
-
         </td>
         <td>
-            <button style="width:100px; height:100px;" 
-            @onmousedown="Up" @ontouchstart:preventDefault="true" @ontouchstart="Up" 
-            @onmouseup="Stop" @ontouchend:preventDefault="true" @ontouchend="Stop">UP</button>
+            <button style="width:100px; height:100px;"
+                    @onmousedown="Up" @ontouchstart:preventDefault="true" @ontouchstart="Up"
+                    @onmouseup="Stop" @ontouchend:preventDefault="true" @ontouchend="Stop">
+                UP
+            </button>
         </td>
         <td>
-
         </td>
     </tr>
     <tr>
         <td>
             <button style="width:100px; height:100px;"
-            @onmousedown="Left" @ontouchstart="Left" @ontouchstart:preventDefault="true"
-                    @onmouseup="Stop" @ontouchend="Stop" @ontouchend:preventDefault="true">LEFT</button>
+                    @onmousedown="Left" @ontouchstart="Left" @ontouchstart:preventDefault="true"
+                    @onmouseup="Stop" @ontouchend="Stop" @ontouchend:preventDefault="true">
+                LEFT
+            </button>
         </td>
         <td>
             <button style="width:100px; height:100px;" @onmouseup="Stop">STOP</button>
         </td>
         <td>
-            <button style="width:100px; height:100px;" 
-            @onmousedown="Right" @ontouchstart="Right" @ontouchstart:preventDefault="true"
-            @onmouseup="Stop" @ontouchend="Stop" @ontouchend:preventDefault="true">RIGHT</button>
+            <button style="width:100px; height:100px;"
+                    @onmousedown="Right" @ontouchstart="Right" @ontouchstart:preventDefault="true"
+                    @onmouseup="Stop" @ontouchend="Stop" @ontouchend:preventDefault="true">
+                RIGHT
+            </button>
         </td>
     </tr>
     <tr>
         <td>
         </td>
         <td>
-            <button style="width:100px; height:100px;" 
-            @onmousedown="Down" @ontouchstart="Down" @ontouchstart:preventDefault="true"  
-            @onmouseup="Stop" @ontouchend="Stop">DOWN</button>
+            <button style="width:100px; height:100px;"
+                    @onmousedown="Down" @ontouchstart="Down" @ontouchstart:preventDefault="true"
+                    @onmouseup="Stop" @ontouchend="Stop">
+                DOWN
+            </button>
         </td>
         <td>
         </td>
@@ -64,7 +72,25 @@
 </table>
 
 
+<div class="infoFooter">
+    <table style="margin: auto;">
+        <tr>
+            <td>Connected: </td>
+            <td>@(serv.connected ? serv.IPAddress.ToString() : "No")</td>
+        </tr>
+        @if (serv.connected)
+        {
+            <tr>
+                <td>Distance: </td>
+                <td>@serv.distance</td>
+            </tr>
+        }
+    </table>
+    @if (serv.connected)
+    {
 
+    }
+</div>
 
 
 <script>
@@ -72,35 +98,35 @@
 </script>
 @code
 {
-    public string IP = "100.64.0.100";
+    public string IPRobot = "100.64.0.100";
+    public string IPLocal = "100.64.0.101";
     public string dst = "NULL";
     public void SaveIP()
     {
-        try
+        if (!serv.SaveLocalIP(IPLocal))
         {
-            serv.IPAddress = IPAddress.Parse(IP);
-            serv.Test();
+            
         }
-        catch(Exception e)
+        if(!serv.Test(IPRobot))
         {
-            JS.InvokeVoidAsync("alert", "Wrong IP format!");   
+            JS.InvokeVoidAsync("alert", "Robot IP error!");
         }
     }
 
     public void StopJoystick(MouseEventArgs e)
     {
         if (e.Buttons == 1) serv.Stop();
-        
+
     }
 
-        /*
+    /*
     public void LogA()
     {
     serv.Test();
-        }
+    }
 
     public void LogB()
-        {
+    {
     Console.WriteLine("EventB");
     }
 
@@ -112,12 +138,12 @@
 
 
     */
-
+    /*
     public void Test()
     {
         serv.Test();
     }
-
+    */
     public void Up()
     {
         serv.Up();

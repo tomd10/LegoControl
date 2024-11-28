@@ -5,20 +5,20 @@ using System.Text;
 namespace LegoControl
 {
     public class SingletonService
-    {  
+    {
         //Connection info
         public const int port = 42069;                      //Robot port
         public const int localPort = 42070;                 //Local port
         public const string localIPString = "172.27.138.104";    //Local IP
-        
+
         public UdpClient udpClient = new UdpClient();
-        IPEndPoint e = new IPEndPoint(IPAddress.Parse(localIPString), localPort);
-        UdpClient u = new UdpClient(new IPEndPoint(IPAddress.Parse(localIPString), localPort));
+        IPEndPoint e;
+        UdpClient u;
 
         //Counters
         public int receivedPackets = 0;
         public int sentPackets = 0;
-        
+
         //Webpage variables
         public IPAddress IPAddress = null;
         public bool connected = false;
@@ -28,19 +28,38 @@ namespace LegoControl
         Random rnd = new Random();
         public SingletonService()
         {
-            UdpState s = new UdpState();
-            s.e = e;
-            s.u = u;
 
-            Logger.AddAndDisplay("Listening on UDP/" + localIPString + ":" + localPort.ToString(), Severity.Information);
-            u.BeginReceive(new AsyncCallback(ReceiveCallback), s);
+        }
+
+        public bool SaveLocalIP(string IPLocal)
+        {
+            try
+            {
+                IPAddress localIP = IPAddress.Parse(IPLocal);
+                e = new IPEndPoint(localIP, localPort);
+                u = new UdpClient(new IPEndPoint(IPAddress.Parse(localIPString), localPort));
+
+                UdpState s = new UdpState();
+                s.e = e;
+                s.u = u;
+
+                Logger.AddAndDisplay("Listening on UDP/" + localIPString + ":" + localPort.ToString(), Severity.Information);
+                u.BeginReceive(new AsyncCallback(ReceiveCallback), s);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            return false;
         }
         public void SendCommand(string command)
         {
-            if (IPAddress != null && (connected || command.StartsWith(Commands.PingRequest)))
+            if ((IPAddress != null && (connected || command.StartsWith(Commands.PingRequest))))
             {
                 sentPackets++;
-                Logger.AddAndDisplay("sent src " + localIPString + ":" + localPort + " dst " + IPAddress.ToString() + ":" + port + " data: '" + command +"'", Severity.Information);
+                Logger.AddAndDisplay("sent src " + localIPString + ":" + localPort + " dst " + IPAddress.ToString() + ":" + port + " data: '" + command + "'", Severity.Information);
                 byte[] CMD = Encoding.ASCII.GetBytes(command);
                 udpClient.Send(CMD, CMD.Length, IPAddress.ToString(), port);
             }
@@ -60,7 +79,7 @@ namespace LegoControl
 
             //Evaluation of received data
             ///------------------------------------------------------------
-            Logger.AddAndDisplay("re'd src " + (IPAddress != null ? IPAddress.ToString() : "0.0.0.0") + ":" + port + " dst " + localIPString + ":" + localPort + " data: '" + receiveString +"'", Severity.Information);
+            Logger.AddAndDisplay("re'd src " + (IPAddress != null ? IPAddress.ToString() : "0.0.0.0") + ":" + port + " dst " + localIPString + ":" + localPort + " data: '" + receiveString + "'", Severity.Information);
             receivedPackets++;
 
             string[] cmds = receiveString.Split("@@@");
@@ -79,7 +98,7 @@ namespace LegoControl
                         Logger.AddAndDisplay("Connection with" + (IPAddress != null ? IPAddress.ToString() : "0.0.0.0") + " OK!", Severity.Information);
                         connected = true;
                         songs = new List<string>();
-                        for (int i = 4;  i < parameters.Length; i = i +2)
+                        for (int i = 4; i < parameters.Length; i = i + 2)
                         {
                             if (parameters[i] == "SONG")
                             {
@@ -134,14 +153,22 @@ namespace LegoControl
 
         private bool awaitingPingReply = false;
         private int pingIdentifier = 0;
-        public void Test()
+        public bool Test(string robotIP)
         {
-            connected = false;
-            pingIdentifier = rnd.Next(0, 100);
-            awaitingPingReply = true;
+            try
+            {
+                this.IPAddress = IPAddress.Parse(robotIP);
+                connected = false;
+                pingIdentifier = rnd.Next(0, 100);
+                awaitingPingReply = true;
 
-            SendCommand(Commands.PingRequestCommand(pingIdentifier.ToString()));
-            
+                SendCommand(Commands.PingRequestCommand(pingIdentifier.ToString()));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public void Up()
@@ -179,10 +206,10 @@ namespace LegoControl
             SendCommand(Commands.Mute);
         }
 
-        public void Joystick (int x, int y, int dim)
+        public void Joystick(int x, int y, int dim)
         {
-            int cartX = x - dim/2;
-            int cartY = dim/2 - y;
+            int cartX = x - dim / 2;
+            int cartY = dim / 2 - y;
             //Console.WriteLine(cartX + " " + cartY);
 
             int normY = (int)(100 * (2 * (double)cartY / (double)dim));
