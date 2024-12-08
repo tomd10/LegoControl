@@ -132,23 +132,6 @@ namespace LegoControl
 
             u.BeginReceive(new AsyncCallback(ReceiveCallback), s);
         }
-        /*
-        private string message = "";
-        public bool DisplayMessage (out string msg)
-        {
-            if (message == "")
-            {
-                msg = "";
-                return false;
-            }
-            else
-            {
-                msg = message;
-                message = "";
-                return true;
-            }
-        }
-        */
 
         private bool awaitingPingReply = false;
         private int pingIdentifier = 0;
@@ -209,12 +192,9 @@ namespace LegoControl
         {
             int cartX = x - dim / 2;
             int cartY = dim / 2 - y;
-            //Console.WriteLine(cartX + " " + cartY);
 
             int normY = (int)(100 * (2 * (double)cartY / (double)dim));
             int normX = (int)(100 * (2 * (double)cartX / (double)dim));
-
-            //Console.WriteLine("[" + normX + " ; " + normY + "]");
 
             if (normX > 100) normX = 100;
             if (normX < -100) normX = -100;
@@ -222,10 +202,6 @@ namespace LegoControl
             if (normY < -100) normY = -100;
 
             SendCommand(Commands.JoystickCommand(normX, normY));
-            //if (speed > 100) speed = 100;
-            //if (speed < -100) speed = -100;
-
-            //SendCommand(Commands.RideCommand(0, (int)speed, (int)speed));
         }
 
         public void SetVolume(int volume)

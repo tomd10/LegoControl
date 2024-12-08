@@ -4,17 +4,13 @@
 @using System.Text
 @inject IJSRuntime JS
 
-@code
-{
-
-}
 <PageTitle>Home</PageTitle>
 <link rel="stylesheet" href="styles2.css" />
 
 <h2>IP config</h2>
-<InputText @bind-Value="IPRobot" />
+<div>Robot IP:</div><InputText @bind-Value="IPRobot" />
 <br />
-<InputText @bind-Value="IPLocal" />
+<div>Server IP:</div><InputText @bind-Value="IPLocal" />
 <button @onclick="SaveIP">Save robot IP</button>
 
 
@@ -86,16 +82,8 @@
             </tr>
         }
     </table>
-    @if (serv.connected)
-    {
-
-    }
 </div>
 
-
-<script>
-    //document.getElementById("joystick").addEventListener("dragstart", function(e) { var img = document.createElement("img"); img.src = "drag.png"; e.dataTransfer.setDragImage(img, 26, 26); }, false);
-</script>
 @code
 {
     public string IPRobot = "100.64.0.100";
@@ -105,7 +93,7 @@
     {
         if (!serv.SaveLocalIP(IPLocal))
         {
-            
+            JS.InvokeVoidAsync("alert", "Server IP error!");
         }
         if(!serv.Test(IPRobot))
         {
@@ -119,31 +107,6 @@
 
     }
 
-    /*
-    public void LogA()
-    {
-    serv.Test();
-    }
-
-    public void LogB()
-    {
-    Console.WriteLine("EventB");
-    }
-
-    public void Stop()
-    {
-    //SendCommand("LEGOCTRL#STOP");
-    }
-
-
-
-    */
-    /*
-    public void Test()
-    {
-        serv.Test();
-    }
-    */
     public void Up()
     {
         serv.Up();

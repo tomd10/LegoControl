@@ -7,8 +7,14 @@
     -ms-user-select: none !important;
     user-select: none !important;
 }
-img {
-    
+
+#joystick {
+    border: 5px solid black; 
+    width: 100%; 
+    height: 100%; 
+    max-height: 700px; 
+    max-width: 700px; 
+    margin: auto;
 }
 
 .infoFooter
