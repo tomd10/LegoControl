@@ -9,8 +9,8 @@ namespace LegoControl
         //Connection info
         public const int port = 42069;                      //Robot port
         public const int localPort = 42070;                 //Local port
-        public const string localIPString = "172.27.138.104";    //Local IP
 
+        public IPAddress localIP = null;
         public UdpClient udpClient = new UdpClient();
         IPEndPoint e;
         UdpClient u;
@@ -33,33 +33,32 @@ namespace LegoControl
 
         public bool SaveLocalIP(string IPLocal)
         {
+            if (localIP != null) return true;
+            UdpState s = new UdpState();
+            s.e = e;
+            s.u = u;
             try
             {
-                IPAddress localIP = IPAddress.Parse(IPLocal);
-                e = new IPEndPoint(localIP, localPort);
-                u = new UdpClient(new IPEndPoint(IPAddress.Parse(localIPString), localPort));
-
-                UdpState s = new UdpState();
-                s.e = e;
-                s.u = u;
-
-                Logger.AddAndDisplay("Listening on UDP/" + localIPString + ":" + localPort.ToString(), Severity.Information);
-                u.BeginReceive(new AsyncCallback(ReceiveCallback), s);
-
-                return true;
+                localIP = IPAddress.Parse(IPLocal);
             }
             catch
             {
                 return false;
             }
-            return false;
+
+            localIP = IPAddress.Parse(IPLocal);
+            e = new IPEndPoint(localIP, localPort);
+            u = new UdpClient(new IPEndPoint(localIP, localPort));
+            Logger.AddAndDisplay("Listening on UDP/" + localIP.ToString() + ":" + localPort.ToString(), Severity.Information);
+            u.BeginReceive(new AsyncCallback(ReceiveCallback), s);
+            return true;
         }
         public void SendCommand(string command)
         {
-            if ((IPAddress != null && (connected || command.StartsWith(Commands.PingRequest))))
+            if ((localIP != null && IPAddress != null && (connected || command.StartsWith(Commands.PingRequest))))
             {
                 sentPackets++;
-                Logger.AddAndDisplay("sent src " + localIPString + ":" + localPort + " dst " + IPAddress.ToString() + ":" + port + " data: '" + command + "'", Severity.Information);
+                Logger.AddAndDisplay("sent src " + localIP.ToString() + ":" + localPort + " dst " + IPAddress.ToString() + ":" + port + " data: '" + command + "'", Severity.Information);
                 byte[] CMD = Encoding.ASCII.GetBytes(command);
                 udpClient.Send(CMD, CMD.Length, IPAddress.ToString(), port);
             }
@@ -79,7 +78,7 @@ namespace LegoControl
 
             //Evaluation of received data
             ///------------------------------------------------------------
-            Logger.AddAndDisplay("re'd src " + (IPAddress != null ? IPAddress.ToString() : "0.0.0.0") + ":" + port + " dst " + localIPString + ":" + localPort + " data: '" + receiveString + "'", Severity.Information);
+            Logger.AddAndDisplay("re'd src " + (IPAddress != null ? IPAddress.ToString() : "0.0.0.0") + ":" + port + " dst " + (localIP != null ? localIP.ToString() : "0.0.0.0") + ":" + localPort + " data: '" + receiveString + "'", Severity.Information);
             receivedPackets++;
 
             string[] cmds = receiveString.Split("@@@");
